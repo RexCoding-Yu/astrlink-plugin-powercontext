@@ -1,0 +1,50 @@
+{
+  "now": "2026-10-21T22:30:00Z",
+  "timeZone": "America/New_York",
+  "config": {"serverUrl": "https://memory.test"},
+  "cases": [
+    {
+      "name": "a long query keeps its start and its end within the topic search's terms",
+      "hook": "callTool",
+      "args": [{"input": {"query": "分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标"}, "language": "zh-CN", "meta": {"project": {"source": "session", "value": "datav"}}, "name": "search", "session": {"id": "session_1", "turn": 2}}],
+      "fetch": [
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/topic-memory/search", "body": {"limit": 5, "mode": "text", "query": "分页游标分页游标分页游标分页游 分页游标分页游标分页游标分页游标"}, "times": 1, "status": 200, "json": {"results": []}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/atomic-memory/search", "body": {"limit": 5, "mode": "text", "query": "分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标"}, "times": 1, "status": 200, "json": {"results": []}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/skill/search", "body": {"limit": 5, "query": "分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标"}, "times": 1, "status": 200, "json": {"results": []}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/atomic-memory/search", "body": {"limit": 5, "query": "分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标"}, "times": 1, "status": 200, "json": {"results": []}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/experience/search", "body": {"limit": 5, "query": "分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标分页游标"}, "times": 1, "status": 200, "json": {"results": []}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/topic-memory/search", "body": {"limit": 5, "query": "分页游标分页游标分页游标分页游 分页游标分页游标分页游标分页游标"}, "times": 1, "status": 200, "json": {"results": []}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/server-info", "times": 1, "status": 200, "json": {"package_version": "1.3.0"}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/scopes?query=datav&query_field=title&limit=100", "times": 1, "status": 200, "json": {"items": [{"scope_id": "scp_datav", "title": "datav", "summary": "s", "context_references": [], "external_references": [], "version": 1}], "next_cursor": null}, "delayMs": 3}
+      ],
+      "expect": {
+        "result": {"text": "没有找到相关的记忆。", "hits": 0, "record": {"title": "记忆查询", "status": "ok", "summary": "检索 · 没有命中"}},
+        "store": {"scope:datav": "scp_datav", "server": {"at": 1792621800000, "version": "1.3.0"}}
+      }
+    },
+    {
+      "name": "a project the server does not know has no memory, and a lookup does not make it one",
+      "hook": "callTool",
+      "args": [{"input": {"query": "分页"}, "language": "zh-CN", "meta": {"project": {"source": "session", "value": "brand-new"}}, "name": "search", "session": {"id": "session_1", "turn": 2}}],
+      "store": {"scope:datav": "scp_datav", "server": {"at": 1792621800000, "version": "1.3.0"}},
+      "fetch": [
+        {"method": "GET", "url": "https://memory.test/v1/scopes?query=brand-new&query_field=title&limit=100", "times": 1, "status": 200, "json": {"items": [], "next_cursor": null}, "delayMs": 3}
+      ],
+      "expect": {
+        "result": {"text": "这个项目在记忆服务器上还没有记忆。", "hits": 0, "record": {"title": "记忆查询", "status": "ok", "summary": "这个项目在记忆服务器上还没有记忆。"}},
+        "store": {"scope:datav": "scp_datav", "server": {"at": 1792621800000, "version": "1.3.0"}}
+      }
+    },
+    {
+      "name": "a search the server does not answer",
+      "hook": "callTool",
+      "args": [{"input": {"query": "x"}, "language": "en", "meta": {"project": {"source": "session", "value": "datav"}}, "name": "search", "session": {"id": "session_1", "turn": 2}}],
+      "fetch": [
+        {"method": "GET", "url": "https://memory.test/v1/server-info", "times": 1, "error": "network", "delayMs": 1}
+      ],
+      "expect": {
+        "result": {"text": "Server unavailable: unreachable", "hits": 0, "record": {"title": "Memory lookup", "status": "failed", "summary": "Server unavailable: unreachable"}}
+      }
+    }
+  ]
+}

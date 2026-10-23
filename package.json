@@ -1,0 +1,15 @@
+{
+  "name": "astrlink-plugin-powercontext",
+  "version": "3.0.0",
+  "description": "把 PowerContext 记忆服务器接进 AstrLink：会话装载项目画像和主题目录，首轮询问项目，把对话写进记忆，Agent 可以自己查和上报。",
+  "private": true,
+  "type": "module",
+  "author": "rexcoding",
+  "license": "Apache-2.0",
+  "engines": {
+    "astrlink": ">=0.1.0-0"
+  },
+  "astrlink": {
+    "plugin": "src/plugin.ts"
+  }
+}

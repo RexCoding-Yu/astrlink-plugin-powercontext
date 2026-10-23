@@ -1,0 +1,63 @@
+{
+  "now": "2026-10-21T22:30:00Z",
+  "timeZone": "America/New_York",
+  "config": {"serverUrl": "https://memory.test"},
+  "cases": [
+    {
+      "name": "a session without a project",
+      "hook": "prepareSession",
+      "args": [{"client": "claude_code", "language": "zh-CN", "meta": {}, "model": "claude-test", "protocol": "anthropic.messages", "session": {"first": true, "id": "session_1", "turn": 1}, "stream": true, "user": {"text": "帮我把分页改成游标", "typed": "帮我把分页改成游标"}}],
+      "expect": {
+        "result": {"record": {"title": "记忆装载", "status": "skipped", "summary": "会话还没有项目"}}
+      }
+    },
+    {
+      "name": "a session kept out of memory",
+      "hook": "prepareSession",
+      "args": [{"client": "claude_code", "language": "zh-CN", "meta": {"project": {"source": "session", "value": "none"}}, "model": "claude-test", "protocol": "anthropic.messages", "session": {"first": true, "id": "session_1", "turn": 1}, "stream": true, "user": {"text": "帮我把分页改成游标", "typed": "帮我把分页改成游标"}}],
+      "expect": {
+        "result": {"record": {"title": "记忆装载", "status": "skipped", "summary": "本会话不纳入记忆"}}
+      }
+    },
+    {
+      "name": "a project with no profile or topics yet",
+      "hook": "prepareSession",
+      "args": [{"client": "claude_code", "language": "en", "meta": {"project": {"source": "session", "value": "datav"}}, "model": "claude-test", "protocol": "anthropic.messages", "session": {"first": true, "id": "session_1", "turn": 1}, "stream": true, "user": {"text": "帮我把分页改成游标", "typed": "帮我把分页改成游标"}}],
+      "fetch": [
+        {"method": "PUT", "url": "https://memory.test/v1/scopes/scp_datav/profile-policy", "body": {"activation_mode": "automatic", "expected_version": 0, "generation_enabled": true}, "times": 1, "status": 200, "json": {"scope_id": "scp_datav", "generation_enabled": true, "activation_mode": "automatic", "pending_candidate_id": null, "version": 1, "updated_at": "2026-10-21T00:00:00Z"}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/server-info", "times": 1, "status": 200, "json": {"package_version": "1.3.0"}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/scopes?query=datav&query_field=title&limit=100", "times": 1, "status": 200, "json": {"items": [{"scope_id": "scp_datav", "title": "datav", "summary": "s", "context_references": [], "external_references": [], "version": 1}], "next_cursor": null}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/scopes/scp_datav/profile-policy", "times": 1, "status": 404, "json": {"error": {"code": "not_found", "message": "Not found."}}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/topic-memory?limit=100", "times": 1, "status": 200, "json": {"items": [], "next_cursor": null}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/profile/profile", "times": 1, "status": 503, "json": {"error": {"code": "artifact_owner_pending", "message": "Access Control is unavailable.", "details": null}}, "delayMs": 3}
+      ],
+      "expect": {
+        "result": {"record": {"title": "Memory load", "status": "skipped", "summary": "The project has no profile or topics yet"}},
+        "store": {"policy:scp_datav": true, "scope:datav": "scp_datav", "server": {"at": 1792621800000, "version": "1.3.0"}}
+      }
+    },
+    {
+      "name": "a server older than 1.3",
+      "hook": "prepareSession",
+      "args": [{"client": "claude_code", "language": "zh-CN", "meta": {"project": {"source": "session", "value": "datav"}}, "model": "claude-test", "protocol": "anthropic.messages", "session": {"first": true, "id": "session_1", "turn": 1}, "stream": true, "user": {"text": "帮我把分页改成游标", "typed": "帮我把分页改成游标"}}],
+      "fetch": [
+        {"method": "GET", "url": "https://memory.test/v1/server-info", "times": 1, "status": 200, "json": {"package_version": "1.2.9"}, "delayMs": 3}
+      ],
+      "expect": {
+        "result": {"record": {"title": "记忆装载", "status": "skipped", "summary": "服务器不可用：PowerContext 1.2.9 太旧，需要 1.3 或以上"}},
+        "store": {"server": {"at": 1792621800000, "version": "1.2.9"}}
+      }
+    },
+    {
+      "name": "a load the server does not answer",
+      "hook": "prepareSession",
+      "args": [{"client": "claude_code", "language": "zh-CN", "meta": {"project": {"source": "session", "value": "datav"}}, "model": "claude-test", "protocol": "anthropic.messages", "session": {"first": true, "id": "session_1", "turn": 1}, "stream": true, "user": {"text": "帮我把分页改成游标", "typed": "帮我把分页改成游标"}}],
+      "fetch": [
+        {"method": "GET", "url": "https://memory.test/v1/server-info", "times": 1, "error": "network", "delayMs": 1}
+      ],
+      "expect": {
+        "result": {"record": {"title": "记忆装载", "status": "skipped", "summary": "服务器不可用：连不上"}}
+      }
+    }
+  ]
+}

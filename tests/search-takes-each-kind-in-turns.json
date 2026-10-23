@@ -1,0 +1,94 @@
+{
+  "now": "2026-10-21T22:30:00Z",
+  "timeZone": "America/New_York",
+  "cases": [
+    {
+      "name": "rank by rank, one kind after another, five in all",
+      "hook": "callTool",
+      "args": [{"input": {"query": "分页的游标边界"}, "language": "zh-CN", "meta": {"project": {"source": "session", "value": "datav"}}, "name": "search", "session": {"id": "session_1", "turn": 2}}],
+      "config": {"serverUrl": "https://memory.test", "lookupLimit": 5},
+      "fetch": [
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/atomic-memory/search", "body": {"limit": 5, "mode": "text", "query": "分页的游标边界"}, "times": 1, "status": 200, "json": {"results": [{"family": "atomic-memory", "artifact_id": "am_1", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "游标分页的边界：最后一页返回空游标。"}}, {"family": "atomic-memory", "artifact_id": "am_2", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "分页参数叫 cursor 和 limit。"}}, {"family": "atomic-memory", "artifact_id": "am_3", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "第三条。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/topic-memory/search", "body": {"limit": 5, "mode": "text", "query": "分页的游标边界"}, "times": 1, "status": 200, "json": {"results": [{"family": "topic-memory", "artifact_id": "tm_1", "revision": 2, "lineage": {}, "content": {"title": "分页", "summary": "列表改成游标分页。", "detail": "游标是 base64 编码的 id。\n每页 50 条。"}}, {"family": "topic-memory", "artifact_id": "tm_2", "revision": 1, "lineage": {}, "content": {"title": "大屏刷新", "summary": "大屏改成增量推送。", "detail": "推送间隔可配置。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/skill/search", "body": {"limit": 5, "query": "分页的游标边界"}, "times": 1, "status": 200, "json": {"results": [{"family": "skill", "artifact_id": "sk_1", "revision": 1, "lineage": {}, "content": {"name": "pagination-review", "description": "检查分页实现的清单。", "instructions": "…", "validation": []}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/topic-memory/search", "body": {"limit": 5, "query": "分页的游标边界"}, "times": 1, "status": 200, "json": {"results": [{"family": "topic-memory", "artifact_id": "tm_1", "revision": 2, "lineage": {}, "content": {"title": "分页", "summary": "列表改成游标分页。", "detail": "游标是 base64 编码的 id。\n每页 50 条。"}}, {"family": "topic-memory", "artifact_id": "tm_2", "revision": 1, "lineage": {}, "content": {"title": "大屏刷新", "summary": "大屏改成增量推送。", "detail": "推送间隔可配置。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/atomic-memory/search", "body": {"limit": 5, "query": "分页的游标边界"}, "times": 1, "status": 200, "json": {"results": [{"family": "atomic-memory", "artifact_id": "am_1", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "游标分页的边界：最后一页返回空游标。"}}, {"family": "atomic-memory", "artifact_id": "am_2", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "分页参数叫 cursor 和 limit。"}}, {"family": "atomic-memory", "artifact_id": "am_3", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "第三条。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/experience/search", "body": {"limit": 5, "query": "分页的游标边界"}, "times": 1, "status": 200, "json": {"results": [{"family": "experience", "artifact_id": "ex_1", "revision": 1, "lineage": {}, "content": {"situation": "改分页", "action": "先写边界测试", "outcome": "少返工", "lesson": "改分页先补边界测试。"}}]}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/server-info", "times": 1, "status": 200, "json": {"package_version": "1.3.0"}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/scopes?query=datav&query_field=title&limit=100", "times": 1, "status": 200, "json": {"items": [{"scope_id": "scp_datav", "title": "datav", "summary": "s", "context_references": [], "external_references": [], "version": 1}], "next_cursor": null}, "delayMs": 3}
+      ],
+      "expect": {
+        "result": {"text": "- [主题记忆] 分页：列表改成游标分页。\n- [原子记忆] 游标分页的边界：最后一页返回空游标。\n- [经验] 改分页先补边界测试。\n- [技能] pagination-review：检查分页实现的清单。\n- [主题记忆] 大屏刷新：大屏改成增量推送。", "hits": 5, "record": {"title": "记忆查询", "status": "ok", "summary": "检索 · 命中 5 条"}},
+        "store": {"scope:datav": "scp_datav", "server": {"at": 1792621800000, "version": "1.3.0"}}
+      }
+    },
+    {
+      "name": "the model may ask for fewer",
+      "hook": "callTool",
+      "args": [{"input": {"limit": 2, "query": "cursor"}, "language": "en", "meta": {"project": {"source": "session", "value": "datav"}}, "name": "search", "session": {"id": "session_1", "turn": 2}}],
+      "config": {"serverUrl": "https://memory.test", "lookupLimit": 5},
+      "store": {"scope:datav": "scp_datav", "server": {"at": 1792621800000, "version": "1.3.0"}},
+      "fetch": [
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/atomic-memory/search", "body": {"limit": 2, "mode": "text", "query": "cursor"}, "times": 1, "status": 200, "json": {"results": [{"family": "atomic-memory", "artifact_id": "am_1", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "游标分页的边界：最后一页返回空游标。"}}, {"family": "atomic-memory", "artifact_id": "am_2", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "分页参数叫 cursor 和 limit。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/topic-memory/search", "body": {"limit": 2, "mode": "text", "query": "cursor"}, "times": 1, "status": 200, "json": {"results": [{"family": "topic-memory", "artifact_id": "tm_1", "revision": 2, "lineage": {}, "content": {"title": "分页", "summary": "列表改成游标分页。", "detail": "游标是 base64 编码的 id。\n每页 50 条。"}}, {"family": "topic-memory", "artifact_id": "tm_2", "revision": 1, "lineage": {}, "content": {"title": "大屏刷新", "summary": "大屏改成增量推送。", "detail": "推送间隔可配置。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/skill/search", "body": {"limit": 2, "query": "cursor"}, "times": 1, "status": 200, "json": {"results": [{"family": "skill", "artifact_id": "sk_1", "revision": 1, "lineage": {}, "content": {"name": "pagination-review", "description": "检查分页实现的清单。", "instructions": "…", "validation": []}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/topic-memory/search", "body": {"limit": 2, "query": "cursor"}, "times": 1, "status": 200, "json": {"results": [{"family": "topic-memory", "artifact_id": "tm_1", "revision": 2, "lineage": {}, "content": {"title": "分页", "summary": "列表改成游标分页。", "detail": "游标是 base64 编码的 id。\n每页 50 条。"}}, {"family": "topic-memory", "artifact_id": "tm_2", "revision": 1, "lineage": {}, "content": {"title": "大屏刷新", "summary": "大屏改成增量推送。", "detail": "推送间隔可配置。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/experience/search", "body": {"limit": 2, "query": "cursor"}, "times": 1, "status": 200, "json": {"results": [{"family": "experience", "artifact_id": "ex_1", "revision": 1, "lineage": {}, "content": {"situation": "改分页", "action": "先写边界测试", "outcome": "少返工", "lesson": "改分页先补边界测试。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/atomic-memory/search", "body": {"limit": 2, "query": "cursor"}, "times": 1, "status": 200, "json": {"results": [{"family": "atomic-memory", "artifact_id": "am_1", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "游标分页的边界：最后一页返回空游标。"}}, {"family": "atomic-memory", "artifact_id": "am_2", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "分页参数叫 cursor 和 limit。"}}]}, "delayMs": 3}
+      ],
+      "expect": {
+        "result": {"text": "- [topics] 分页: 列表改成游标分页。\n- [atomic memory] 游标分页的边界：最后一页返回空游标。", "hits": 2, "record": {"title": "Memory lookup", "status": "ok", "summary": "search · 2 hits"}},
+        "store": {"scope:datav": "scp_datav", "server": {"at": 1792621800000, "version": "1.3.0"}}
+      }
+    },
+    {
+      "name": "a full search late gives way to the search by words; a kind that fails leaves the others",
+      "hook": "callTool",
+      "args": [{"input": {"query": "分页"}, "language": "zh-CN", "meta": {"project": {"source": "session", "value": "datav"}}, "name": "search", "session": {"id": "session_1", "turn": 2}}],
+      "config": {"serverUrl": "https://memory.test", "lookupLimit": 5},
+      "store": {"scope:datav": "scp_datav", "server": {"at": 1792621800000, "version": "1.3.0"}},
+      "fetch": [
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/atomic-memory/search", "body": {"limit": 5, "mode": "text", "query": "分页"}, "times": 1, "status": 200, "json": {"results": [{"family": "atomic-memory", "artifact_id": "am_1", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "游标分页的边界：最后一页返回空游标。"}}, {"family": "atomic-memory", "artifact_id": "am_2", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "分页参数叫 cursor 和 limit。"}}, {"family": "atomic-memory", "artifact_id": "am_3", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "第三条。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/topic-memory/search", "body": {"limit": 5, "mode": "text", "query": "分页"}, "times": 1, "status": 200, "json": {"results": [{"family": "topic-memory", "artifact_id": "tm_1", "revision": 2, "lineage": {}, "content": {"title": "分页", "summary": "列表改成游标分页。", "detail": "游标是 base64 编码的 id。\n每页 50 条。"}}, {"family": "topic-memory", "artifact_id": "tm_2", "revision": 1, "lineage": {}, "content": {"title": "大屏刷新", "summary": "大屏改成增量推送。", "detail": "推送间隔可配置。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/skill/search", "body": {"limit": 5, "query": "分页"}, "times": 1, "status": 200, "json": {"results": [{"family": "skill", "artifact_id": "sk_1", "revision": 1, "lineage": {}, "content": {"name": "pagination-review", "description": "检查分页实现的清单。", "instructions": "…", "validation": []}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/atomic-memory/search", "body": {"limit": 5, "query": "分页"}, "times": 1, "status": 200, "json": {"results": [{"family": "atomic-memory", "artifact_id": "am_1", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "游标分页的边界：最后一页返回空游标。"}}, {"family": "atomic-memory", "artifact_id": "am_2", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "分页参数叫 cursor 和 limit。"}}, {"family": "atomic-memory", "artifact_id": "am_3", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "第三条。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/experience/search", "body": {"limit": 5, "query": "分页"}, "times": 1, "status": 422, "json": {"error": {"code": "unsupported", "message": "search mode is not supported"}}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/topic-memory/search", "body": {"limit": 5, "query": "分页"}, "times": 1, "error": "timeout"}
+      ],
+      "expect": {
+        "result": {"text": "- [主题记忆] 分页：列表改成游标分页。\n- [原子记忆] 游标分页的边界：最后一页返回空游标。\n- [技能] pagination-review：检查分页实现的清单。\n- [主题记忆] 大屏刷新：大屏改成增量推送。\n- [原子记忆] 分页参数叫 cursor 和 limit。", "hits": 5, "record": {"title": "记忆查询", "status": "ok", "summary": "检索 · 命中 5 条 · 只用了关键词检索 · 1 类检索失败"}},
+        "store": {"scope:datav": "scp_datav", "server": {"at": 1792621800000, "version": "1.3.0"}}
+      }
+    },
+    {
+      "name": "the settings leave kinds out",
+      "hook": "callTool",
+      "args": [{"input": {"query": "分页"}, "language": "zh-CN", "meta": {"project": {"source": "session", "value": "datav"}}, "name": "search", "session": {"id": "session_1", "turn": 2}}],
+      "config": {"serverUrl": "https://memory.test", "searchTopics": false, "searchExperience": false, "searchSkills": false},
+      "fetch": [
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/atomic-memory/search", "body": {"limit": 5, "mode": "text", "query": "分页"}, "times": 1, "status": 200, "json": {"results": [{"family": "atomic-memory", "artifact_id": "am_1", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "游标分页的边界：最后一页返回空游标。"}}, {"family": "atomic-memory", "artifact_id": "am_2", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "分页参数叫 cursor 和 limit。"}}, {"family": "atomic-memory", "artifact_id": "am_3", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "第三条。"}}]}, "delayMs": 3},
+        {"method": "POST", "url": "https://memory.test/v1/scopes/scp_datav/artifacts/atomic-memory/search", "body": {"limit": 5, "query": "分页"}, "times": 1, "status": 200, "json": {"results": [{"family": "atomic-memory", "artifact_id": "am_1", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "游标分页的边界：最后一页返回空游标。"}}, {"family": "atomic-memory", "artifact_id": "am_2", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "分页参数叫 cursor 和 limit。"}}, {"family": "atomic-memory", "artifact_id": "am_3", "revision": 1, "lineage": {}, "content": {"schema": "powercontext.atomic-memory.v1", "kind": "fact", "text": "第三条。"}}]}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/server-info", "times": 1, "status": 200, "json": {"package_version": "1.3.0"}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/scopes?query=datav&query_field=title&limit=100", "times": 1, "status": 200, "json": {"items": [{"scope_id": "scp_datav", "title": "datav", "summary": "s", "context_references": [], "external_references": [], "version": 1}], "next_cursor": null}, "delayMs": 3}
+      ],
+      "expect": {
+        "result": {"text": "- [原子记忆] 游标分页的边界：最后一页返回空游标。\n- [原子记忆] 分页参数叫 cursor 和 limit。\n- [原子记忆] 第三条。", "hits": 3, "record": {"title": "记忆查询", "status": "ok", "summary": "检索 · 命中 3 条"}},
+        "store": {"scope:datav": "scp_datav", "server": {"at": 1792621800000, "version": "1.3.0"}}
+      }
+    },
+    {
+      "name": "every kind off searches nothing",
+      "hook": "callTool",
+      "args": [{"input": {"query": "分页"}, "language": "zh-CN", "meta": {"project": {"source": "session", "value": "datav"}}, "name": "search", "session": {"id": "session_1", "turn": 2}}],
+      "config": {"serverUrl": "https://memory.test", "searchTopics": false, "searchAtomic": false, "searchExperience": false, "searchSkills": false},
+      "fetch": [
+        {"method": "GET", "url": "https://memory.test/v1/server-info", "times": 1, "status": 200, "json": {"package_version": "1.3.0"}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/scopes?query=datav&query_field=title&limit=100", "times": 1, "status": 200, "json": {"items": [{"scope_id": "scp_datav", "title": "datav", "summary": "s", "context_references": [], "external_references": [], "version": 1}], "next_cursor": null}, "delayMs": 3}
+      ],
+      "expect": {
+        "result": {"text": "插件设置里关掉了所有查询范围。", "hits": 0, "record": {"title": "记忆查询", "status": "skipped", "summary": "插件设置里关掉了所有查询范围。"}},
+        "store": {"scope:datav": "scp_datav", "server": {"at": 1792621800000, "version": "1.3.0"}}
+      }
+    }
+  ]
+}

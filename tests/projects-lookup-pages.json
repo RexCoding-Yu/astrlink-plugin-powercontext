@@ -1,0 +1,47 @@
+{
+  "now": "2026-10-21T22:30:00Z",
+  "timeZone": "America/New_York",
+  "config": {"serverUrl": "https://memory.test"},
+  "metaValues": {"project": [{"value": "paseo-web", "sessions": 1, "lastUsedAt": 1}, {"value": "notes", "sessions": 1, "lastUsedAt": 1}]},
+  "cases": [
+    {
+      "name": "projects lead with this computer's and leave the server's next page for later",
+      "hook": "callTool",
+      "args": [{"input": {"query": "paseo"}, "language": "zh-CN", "meta": {}, "name": "projects", "session": {"id": "session_1", "turn": 2}}],
+      "fetch": [
+        {"method": "GET", "url": "https://memory.test/v1/server-info", "times": 1, "status": 200, "json": {"package_version": "1.3.0"}, "delayMs": 3},
+        {"method": "GET", "url": "https://memory.test/v1/scopes?limit=100&query=paseo&query_field=title", "times": 1, "status": 200, "json": {"items": [{"scope_id": "scp_paseo", "title": "paseo", "summary": "s", "context_references": [], "external_references": [], "version": 1}, {"scope_id": "scp_paseo_api", "title": "paseo-api", "summary": "s", "context_references": [], "external_references": [], "version": 1}], "next_cursor": "c2"}, "delayMs": 3}
+      ],
+      "expect": {
+        "result": {"text": "项目（3 个）：\n- paseo-web\n- paseo\n- paseo-api\n还有更多：加上 --data-urlencode \"cursor=c2\" 再查一次。", "hits": 3, "record": {"title": "记忆查询", "status": "ok", "summary": "列出项目 · 3 个"}},
+        "store": {"server": {"at": 1792621800000, "version": "1.3.0"}}
+      }
+    },
+    {
+      "name": "the next page has the server's only",
+      "hook": "callTool",
+      "args": [{"input": {"cursor": "c2", "query": "paseo"}, "language": "en", "meta": {}, "name": "projects", "session": {"id": "session_1", "turn": 2}}],
+      "store": {"server": {"at": 1792621800000, "version": "1.3.0"}},
+      "fetch": [
+        {"method": "GET", "url": "https://memory.test/v1/scopes?limit=100&query=paseo&query_field=title&cursor=c2", "times": 1, "status": 200, "json": {"items": [{"scope_id": "scp_paseo", "title": "paseo", "summary": "s", "context_references": [], "external_references": [], "version": 1}, {"scope_id": "scp_paseo_api", "title": "paseo-api", "summary": "s", "context_references": [], "external_references": [], "version": 1}], "next_cursor": null}, "delayMs": 3}
+      ],
+      "expect": {
+        "result": {"text": "Projects (2):\n- paseo\n- paseo-api", "hits": 2, "record": {"title": "Memory lookup", "status": "ok", "summary": "projects · 2"}},
+        "store": {"server": {"at": 1792621800000, "version": "1.3.0"}}
+      }
+    },
+    {
+      "name": "no project matches",
+      "hook": "callTool",
+      "args": [{"input": {"cursor": "c2", "query": "nothing"}, "language": "zh-CN", "meta": {}, "name": "projects", "session": {"id": "session_1", "turn": 2}}],
+      "store": {"server": {"at": 1792621800000, "version": "1.3.0"}},
+      "fetch": [
+        {"method": "GET", "url": "https://memory.test/v1/scopes?limit=100&query=nothing&query_field=title&cursor=c2", "times": 1, "status": 200, "json": {"items": [], "next_cursor": null}, "delayMs": 3}
+      ],
+      "expect": {
+        "result": {"text": "没有符合的项目。", "hits": 0, "record": {"title": "记忆查询", "status": "ok", "summary": "列出项目 · 0 个"}},
+        "store": {"server": {"at": 1792621800000, "version": "1.3.0"}}
+      }
+    }
+  ]
+}
